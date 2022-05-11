@@ -8,13 +8,18 @@ import (
 	"shadeauxmedia.com/tools/todo"
 )
 
-const todoFileName = ".todo.json"
+var todoFileName = ".todo.json"
+
+const envFileNameKey = "TODO_FILENAME"
 
 func main() {
 	task := flag.String("task", "", "Task to be included in the ToDo list")
 	list := flag.Bool("list", false, "List all tasks")
 	completed := flag.Int("complete", 0, "Item to be completed")
 
+	if os.Getenv(envFileNameKey) != "" {
+		todoFileName = os.Getenv(envFileNameKey)
+	}
 	flag.Parse()
 
 	l := &todo.List{}
@@ -25,11 +30,12 @@ func main() {
 
 	switch {
 	case *list:
-		for _, item := range *l {
-			if !item.Done {
-				fmt.Println(item.Task)
-			}
-		}
+		fmt.Print(l)
+		// for _, item := range *l {
+		// 	if !item.Done {
+		// 		fmt.Println(item.Task)
+		// 	}
+		// }
 	case *completed > 0:
 		if err := l.Complete(*completed); err != nil {
 			fmt.Fprintln(os.Stderr, err)
