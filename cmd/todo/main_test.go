@@ -12,7 +12,7 @@ import (
 
 var (
 	binName  = "todo"
-	filename = ".todo.json"
+	filename = "test.todo.json"
 )
 
 func TestMain(m *testing.M) {
@@ -28,10 +28,12 @@ func TestMain(m *testing.M) {
 		fmt.Fprintf(os.Stderr, "Cannot build tool %s: %s", binName, err)
 		os.Exit(1)
 	}
+	os.Setenv("TODO_FILENAME", filename)
 	fmt.Println("Running Test...")
 	result := m.Run()
 
 	fmt.Println("Cleaning up...")
+	os.Unsetenv("TODO_FILENAME")
 	os.Remove(binName)
 	os.Remove(filename)
 
